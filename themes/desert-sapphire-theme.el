@@ -100,11 +100,8 @@
                           (myface 'gui-element :background modeline :foreground fg)
                           (myface 'minibuffer-prompt :foreground type)
 
-                          ;; wgrep
+                          ;; wgrep (SlateGray1)
                           )
   )
 
 (provide-theme 'desert-sapphire)
-
-
-
