@@ -3,15 +3,11 @@
 ;; do laundry
 ;; yoga
 
-;; worklogging (life logging/journaling) like jblow ....??
 
-
-;; delete-file
-;; rename-file          +refactoring
-;; make-directory
-;; rename-directory
-;; delete-directory
-;; ido-list-directory
+;; but this only works if buffer is in c-mode
+;; and you need to rerun it every time
+;; so find a better way
+;; (c-toggle-comment-style) ;; C-c C-k
 
 
 ;; emacs 29.3_2
@@ -21,8 +17,6 @@
 (global-set-key (kbd "M-H d v") 'describe-variable)
 (global-set-key (kbd "M-H d k") 'describe-key)
 (global-set-key (kbd "M-H s") 'where-is)
-
-
 
 (setq load-path (cons "w:/Emacs/projects" load-path))
 ;; this is the default project
@@ -34,10 +28,14 @@
 (add-to-list 'load-path "w:/Emacs/packages")
 (require 'wgrep)
 (setq wgrep-auto-save-buffer t)
+;;(require 'imenu-list)
+;;(setq imenu-list-idle-update-delay-time 0.1)
+;;(setq imenu-list-auto-resize nil)
+;;(setq imenu-list-focus-after-activation t)
 
 (add-to-list 'custom-theme-load-path "w:Emacs/themes")
 (load-theme 'desert-sapphire t)
-(set-face-attribute 'default nil :font "Courier New-12")
+;;(set-face-attribute 'default nil :font "Courier New-12")
 (set-face-attribute 'default nil :font "Office Code Pro-12")
 
 (setq inhibit-splash-screen t)
@@ -52,8 +50,9 @@
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(scroll-bar-mode 0)
-(blink-cursor-mode 0)
+(scroll-bar-mode -1)
+(global-display-line-numbers-mode -1)
+(blink-cursor-mode -1)
 (show-paren-mode 1)
 (setq blink-matching-paren t)
 
@@ -93,8 +92,7 @@
 ;; M-y ~ yank-from-kill-ring (but what if I use a prefix argument..?)
 ;; f3 ~ start macro recording
 ;; f4 ~ end macro recording || replay last recorded macro
-;; M-< ~ begin of document
-;; M-> ~ end of document
+;; M-. ~ jump to definition
 
 ;; :project-switch 
 ;; :project-new 
@@ -102,7 +100,8 @@
 ;; :quick-save 
 ;; :quick-load 
 ;; :quick-run 
-;; :config 
+;; :config
+;; :tags-make
 
 (global-unset-key (kbd "C-k"))
 (global-unset-key (kbd "M-k"))
@@ -113,11 +112,12 @@
 (global-unset-key (kbd "C-W"))
 (global-unset-key (kbd "C-M-W"))
 
+(global-set-key (kbd "C-f") 'imenu) ;; use ? on prompt to list all
 (global-set-key (kbd "M-f") 'find-file)
 (global-set-key (kbd "C-M-f") 'project-find-file)
 (global-set-key (kbd "M-b") 'switch-to-buffer)
 (global-set-key (kbd "M-w") 'other-window)
-(global-set-key (kbd "<escape>") 'delete-other-windows) ;; also remove emacs buffers ...?
+(global-set-key (kbd "<escape>") 'delete-other-windows)
 (global-set-key (kbd "M-s") 'split-window-right)
 (global-set-key (kbd "C-=") 'quick-calc)
 
@@ -128,35 +128,33 @@
 (global-set-key (kbd "M-t") 'pop-global-mark)
 (global-set-key (kbd "C-<prior>") 'beginning-of-defun)
 (global-set-key (kbd "C-<next>") 'end-of-defun)
+(global-set-key (kbd "M-<prior>") 'beginning-of-buffer)
+(global-set-key (kbd "M-<next>") 'end-of-buffer)
 (global-set-key (kbd "C-M-<left>") 'backward-list)
 (global-set-key (kbd "C-M-<right>") 'forward-list)
 (global-set-key (kbd "C-M-<up>") 'backward-up-list)
 (global-set-key (kbd "C-M-<down>") 'down-list)
 
-(global-set-key (kbd "<delete>") 'kill-line)
-;;(global-set-key (kbd "M-[") 'insert-parentheses)
-;;(global-set-key (kbd "M-]") 'delete-pair)
+(global-set-key (kbd "<delete>") 'kill-line) ;; do I want kill-whole-line instead?
 (global-set-key (kbd "<home>") 'insert-parentheses)
 (global-set-key (kbd "<end>") 'delete-pair)
 (global-set-key (kbd "<tab>") 'dabbrev-expand)
 (global-set-key (kbd "C-<tab>") 'indent-for-tab-command)
-(global-set-key (kbd "M-Q") 'query-replace)                                 ;; remap?? M-O
-(global-set-key (kbd "M-q") 'replace-string)                                ;; remap?? M-o
+(global-set-key (kbd "M-Q") 'query-replace) 
+(global-set-key (kbd "M-q") 'replace-string)
 (global-set-key (kbd "C-/") 'comment-line)
 (global-set-key (kbd "M-SPC") 'rectangle-mark-mode)
-(global-set-key (kbd "S-SPC") 'string-insert-rectangle)
+(global-set-key (kbd "S-<return>") 'string-insert-rectangle) ;; was S-SPC ,this might induce misstypes
 
-;; saves wgrep changes
-(global-set-key (kbd "C-S-w") 'wgrep-finish-edit) ;; if you use this on a non-grep buffer, do M-x read-only-mode
-;; turns wgrep on
-(global-set-key (kbd "C-w") (kbd "C-c C-p"))
+;; if you use this on a non-grep buffer, do M-x read-only-mode
+(global-set-key (kbd "C-S-w") 'wgrep-finish-edit) ;; saves wgrep changes
+(global-set-key (kbd "C-w") (kbd "C-c C-p")) ;; turns wgrep on
+;;(global-set-key (kbd "C--") 'imenu-list-smart-toggle)
 
-;; change to :save ??
-;; inhibit message?
-(defun __save-all ()
+;; inhibit message when there is something to save ??
+(defun __save-all ()   ;; change to :save ??
   (interactive)
-  (setq current-prefix-arg '(!))
-  (call-interactively 'save-some-buffers)
+  (save-some-buffers t)
   )
 (run-with-timer 0 30 '__save-all)
 
@@ -216,6 +214,7 @@
 ;; git pull ?
 (defun :git-push (arg1)
   (interactive "sCommit message: ")
+  (__save-all)
   (shell-command "git add .")
   (shell-command (format "git commit -m \"%s\"" arg1))
   (shell-command "git push origin main")
@@ -231,8 +230,10 @@
   (other-window -1)
   )
 
+;; automatic :git-push
 (defun :quick-save (arg1)
   (interactive "sChoose name for quick: ")
+  (__save-all)
   (copy-file "w:/Projects/quick/quick.c" (concat "w:/Quicks/src/" arg1 ".c"))
   (copy-file "w:/Projects/quick/exe/quick.exe" (concat "w:/Quicks/exe/" arg1 ".exe"))
   )
@@ -245,6 +246,15 @@
 (defun :config ()
   (interactive)
   (find-file "w:/Emacs/init.el")
+  )
+
+;; automatic, async, better xref window ...?
+(defun :tags-make ()
+  (interactive)
+  (__save-all)
+  (cd (concat "w:/Projects/" project-name "/"))
+  (shell-command "ctags -e -R")
+  (cd (file-name-directory buffer-file-name))
   )
 
 (defun __grep (arg1)
@@ -322,14 +332,25 @@
 
 ;; @@INFO
 
-;; declare functions from source into header
+
+;; delete-file
+;; rename-file          +refactoring
+;; make-directory
+;; rename-directory
+;; delete-directory
+;; ido-list-directory
+
+;; multiple cursors?
+;; C-{ will auto scope and stuff?
 ;; guard (automatic?)
-;; greping with regexp??????
 ;; add horizontal whitespace up to point in a region
+;; make an emacs function that aligns the all = with the horizontally furthest one
+;; also remove emacs buffers (on ESC..) ...?  , was delete-window
 
 ;; scratch-buffer
 ;; ? on command in minibuffer to show possible completions
 ;; SPC for M-f autocompletes
+;; you can change font size with mouse wheel, and in the buffer border you can see offset from original
 
 ;;                                                           ???? ~ back-to-indentation
 
@@ -342,5 +363,15 @@
 ;;                                                           M-v ~ scroll-up
 ;;                                                           <tab> ~ auto-indent
 ;;                                                           C-l ~ center-on-point
+
+;; from old __save-all (although the let and inhibit-message doesn't work...)
+;; (setq current-prefix-arg '(!))
+;; (let ((inhibit-message t)) (call-interactively 'save-some-buffers))
+;; occur-rename-buffer is basically wgrep
+;; C-c C-e ~ macro expansion on region
+;; greping with regexp??????
+;; declare functions from source into header (this is a very bad idea, just think if you delete or add one after you've done this to an entire file, do it manually instead...)
+
+
 
 
