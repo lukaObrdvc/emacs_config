@@ -1,70 +1,37 @@
-;; this is for lerping colors
-;; (defvar A (string-to-number "331900" 16))
-;; (defvar B (string-to-number "330000" 16))
-;; (defvar T 0.5)
-;; (format "%X" (+ (* A T) (- B (* B T))) )
+(deftheme mylight "My light theme for C/C++")
 
-;; bg:
-;; 000A33 000A38 000A3D 000A47 000A5C 051C19 001E66
-;; 00050A 000519 00051E
-;; 05000A 000005 000007 00000A 140033 300000
-;; 002633 051C19 263300 332600 !!0A3833
-;; 33000C
-;; 200020
-
-;; fg:
-;; black (?0.4): CCCCCC
-;; orange+gray: 865320 C09973
-
-(deftheme desert-sapphire "C/C++ theme, for when you don't want anything inhibiting you.")
-
-;; describe-face
-;; list-face-display
 (defun myface (name &rest args)
   (list name `((t, args)) )
   )
 
-;; no more than 0x60 on any color
-;; mixing RED+BLUE : less than 0x10 RED
-
-;; red bg, cyan fg: b201000 ; f44B0EE ; kEE9900 ; tBBEEEE ; l00A000
-
-;; bg : dark blue
-;; fg : yellow(big g small r), beige (big r , (med)g (small)b), green(big g),
-;;      !!lime (big g, small r b), !!white(big r g b)
-;; fg= (AtoC)AAEE00
-;; orangish can be decent on if beige is a bit whiter on main text...
-
-;; 1FAD70 84A9C0 DA4167
 (let
     (
-     (bg "#000A30") ;; 000A20
-     (fg "#D0AA84")
-     (keyword "#D04040") ;; AAEE00 EEAA00 EEEE00 DD8800 D02020 E04040 D04040
-     (type "#40A0A0") ;; EEEEEE DDDDDD 40A0A0
+     (bg "#F6F6F6")
+     (fg "#000000")
+     (keyword "#FF0000")
+     (type "#0000FF")
+     (literal "#008888")
+     (comment "#007700")
      
-     (literal "#40A040") ;; 00A0A0 40A040
-     (comment "#7F7F7F") ;; sixers, seveners, eighters, 7D7D7D
-     (region_bg "#334055") ;;? 003333 002A2A 334b55
-     
-     (caret "#AF8700") ;;? 008800 AF8700
-     (hl_line "#202040") ;;? 003319 000032 000050 00004A
+     (region_bg "#EEDC82")
+     (caret "#000000") 
+     (hl_line "#B4EEB4") 
 
-     (modeline "#132035") ;; 334b55
-     (modeline_active "#334055") ;; 536b75
+     (modeline "#E5E5E5")
+     (modeline_active "#BFBFBF")
      
-     (red "#AA0000")
-     (green "#00AA00")
-     (blue "#0000AA")
-     (orange "#AA8000")
+     (red "#FF0000")
+     (green "#228B22")
+     (blue "#0000FF")
+     (orange "#FF8C00")
      )
 
-  (custom-theme-set-faces `desert-sapphire
+  (custom-theme-set-faces `mylight
                           
                           (myface 'default :background bg :foreground fg)
-                          (myface 'bold :foreground fg) ;; make this bold
-                          (myface 'italic :foreground fg) ;; make this italic
-                          (myface 'bold-italic :foreground fg) ;; make this both
+                          (myface 'bold :foreground fg)
+                          (myface 'italic :foreground fg)
+                          (myface 'bold-italic :foreground fg)
                           (myface 'underline :inherit 'default)
                           (myface 'custom-face-tag :inherit 'default)
                           (myface 'custom-state :inherit 'default)
@@ -102,7 +69,13 @@
                           (myface 'minibuffer-prompt :foreground type)
 
                           ;; wgrep (SlateGray1)
+
+                          ;; (myface 'match :foreground bg :background green :inverse-video nil)
+                          ;; (myface 'isearch :foreground fg :background green)
+                          ;; (myface 'lazy-highlight :foreground fg :background green :inverse-video nil)
+                          ;; (myface 'isearch-fail :background red :inverse-video t)
+                          
                           )
   )
 
-(provide-theme 'desert-sapphire)
+(provide-theme 'mylight)
