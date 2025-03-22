@@ -72,10 +72,10 @@
   (custom-theme-set-faces `moonrocks
                           
                           (myface 'default :background bg :foreground fg)
-                          (myface 'bold :foreground fg)
-                          (myface 'italic :foreground fg)
-                          (myface 'bold-italic :foreground fg)
-                          (myface 'underline :inherit 'default)
+                          (myface 'bold :foreground fg :bold t)
+                          (myface 'italic :foreground fg :italic t)
+                          (myface 'bold-italic :foreground fg :bold t :italic t)
+                          (myface 'underline :inherit 'default :underline t)
                           (myface 'custom-face-tag :inherit 'default)
                           (myface 'custom-state :inherit 'default)
                           (myface 'fringe :inherit 'default)
@@ -94,9 +94,9 @@
                           (myface 'font-lock-type-face :foreground type)
                           (myface 'font-lock-warning-face :foreground red)
 
-                          (myface 'success :foreground green)
-                          (myface 'error :foreground red)
-                          (myface 'warning :foreground orange)
+                          ;; (myface 'success :foreground green)
+                          ;; (myface 'error :foreground red)
+                          ;; (myface 'warning :foreground orange)
 
                           (myface 'highlight :background region_bg)
                           (myface 'cursor :background caret)
@@ -116,6 +116,69 @@
                           ;; (myface 'isearch :foreground fg :background green)
                           ;; (myface 'lazy-highlight :foreground fg :background green :inverse-video nil)
                           ;; (myface 'isearch-fail :background red :inverse-video t)
+
+
+
+                          ;; `(org-agenda-structure ((,class (:foreground ,aqua :bold t))))
+                          ;; `(org-agenda-date ((,class (:foreground ,blue :underline nil))))
+                          ;; `(org-agenda-done ((,class (:foreground ,green))))
+                          ;; `(org-agenda-dimmed-todo-face ((,class (:foreground ,comment))))
+                          ;; `(org-block ((,class (:foreground ,green :background ,far-background :extend t))))
+                          ;; `(org-block-background ((,t (:background ,far-background :extend t))))
+                          ;; `(org-column ((,class (:background ,current-line))))
+                          ;; `(org-column-title ((,class (:inherit org-column :weight bold :underline t))))
+                          ;; `(org-document-info ((,class (:foreground ,aqua :height 1.35))))
+                          ;; `(org-document-info-keyword ((,class (:foreground ,green :height 1.35))))
+                          ;; `(org-document-title ((,class (:weight bold :foreground ,foreground :height 1.35))))
+                          ;; `(org-ellipsis ((,class (:foreground ,comment))))
+                          ;; `(org-footnote ((,class (:foreground ,aqua))))
+                          ;; `(org-formula ((,class (:foreground ,red))))
+                          ;; `(org-special-keyword ((,class (:foreground ,comment))))
+                          ;; `(org-table ((,class (:foreground ,"#e3f2fd" :background ,far-background))))
+                          ;; `(org-block-begin-line ((,class (:foreground ,"#b3e5fc" :background "#1e2930"
+                          ;;                                              :box (:style released-button) :extend t))))
+                          ;; `(org-block-end-line ((,class (:foreground ,"#b3e5fc" :background "#1e2930"
+                          ;;                                            :box (:style released-button) :extend t))))
+                          ;; `(org-kbd ((,class (:background ,inactive-gray :foreground ,foreground
+                          ;;                                 :box (:line-width 1 :color nil :style pressed-button)))))
+
+
+                          ;; `(org-done ((,class (:foreground ,green :bold t :background,"#1b5e20"))))
+                          ;; `(org-todo ((,class (:foreground ,"#ffab91" :bold t :background ,"#dd2c00"))))
+                          ;; `(org-upcoming-deadline ((,class (:foreground ,orange))))
+                          ;; `(org-warning ((,class (:weight bold :foreground ,red))))
+                          ;; `(org-date ((,class (:foreground ,"#80cbc4" :underline t))))
+                          ;; `(org-scheduled ((,class (:foreground ,green))))
+                          ;; `(org-scheduled-previously ((,class (:foreground ,orange))))
+                          ;; `(org-scheduled-today ((,class (:foreground ,green))))
+                          ;; `(org-code ((,class (:foreground ,green :background ,far-background))))
+                          ;; `(org-link ((,class (:foreground ,blue :underline t))))
+                          
+                          ;; (myface 'org-hide :foreground "transparent" :background bg)
+                          
+                          ;; org-verbatim :weight 'bold   :slant 'italic
+                          
+                          (myface 'org-level-1 :foreground keyword :bold t :height 1.3)
+                          (myface 'org-level-2 :foreground keyword :bold t :height 1.2)
+                          (myface 'org-level-3 :foreground keyword :bold t :height 1.1)
+                          (myface 'org-level-4 :foreground keyword :bold t)
+                          (myface 'org-level-5 :foreground keyword :bold t)
+                          (myface 'org-level-6 :foreground keyword :bold t)
+                          (myface 'org-level-7 :foreground keyword :bold t)
+                          (myface 'org-level-8 :foreground keyword :bold t)
+                          (myface 'org-level-9 :foreground keyword :bold t)
+                          
+                          (myface 'org-headline-done :foreground fg :bold nil)
+                          ;; this doesn't work because org doesn't define it
+                          ;; so you would have to define it yourself
+                          ;; similar to how you would highlight TODO in comments
+                          ;; of programming languages, with regexp...
+                          ;; (myface 'org-headline-todo :foreground fg)
+                          (myface 'org-tag :foreground comment :italic t :bold nil)
+                          ;; (myface 'org-underline :foreground fg :underline t)
+
+                          ;; (myface 'org-latex-preview :foreground fg :italic t :bold t :height 1.5 :family "Courier New")
+                          ;; `(org-latex-preview ((t (:foreground "black" :weight bold :background "lightgray"))))
                           
                           )
   )
