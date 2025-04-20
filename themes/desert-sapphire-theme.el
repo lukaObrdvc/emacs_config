@@ -38,20 +38,21 @@
 ;; 1FAD70 84A9C0 DA4167
 (let
     (
-     (bg "#000A30") ;; 000A20
+     (bg "#1a1a1a") ;; 000A30 000A20
      (fg "#D0AA84")
      (keyword "#D04040") ;; AAEE00 EEAA00 EEEE00 DD8800 D02020 E04040 D04040
      (type "#40A0A0") ;; EEEEEE DDDDDD 40A0A0
      
      (literal "#40A040") ;; 00A0A0 40A040
-     (comment "#7F7F7F") ;; sixers, seveners, eighters, 7D7D7D
-     (region_bg "#334055") ;;? 003333 002A2A 334b55
+     (comment "#b0b0b0") ;; 7F7F7F sixers, seveners, eighters, 7D7D7D
+     (region_bg "#303030") ;;? 334055 003333 002A2A 334b55
      
      (caret "#AF8700") ;;? 008800 AF8700
      (hl_line "#202040") ;;? 003319 000032 000050 00004A
 
-     (modeline "#132035") ;; 334b55
-     (modeline_active "#334055") ;; 536b75
+     (modeline "#1C241C") ;; 132035 334b55
+     (modeline_active "#2C342C") ;; 334055 536b75
+     ;; (bufferid "#004000") ;; 004000
      
      (red "#AA0000")
      (green "#00AA00")
@@ -94,7 +95,7 @@
                           (myface 'region :background region_bg)
 
                           (myface 'mode-line :background modeline_active :foreground fg)
-                          (myface 'mode-line-buffer-id :foreground fg)
+                          (myface 'mode-line-buffer-id :foreground literal)
                           (myface 'mode-line-inactive :background modeline :foreground fg)
                           (myface 'mode-line-emphasis :background modeline :foreground fg)
                           (myface 'mode-line-highlight :background modeline :foreground fg)

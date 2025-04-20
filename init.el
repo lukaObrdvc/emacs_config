@@ -3,6 +3,11 @@
 ;; BIGGIE DEAL: when adding env vars, add them to PATH variable, not just as a new variable............
 
 
+;; dired should be a dedicated hotkey
+;; change the SHIFT versions of things not to be inconvenient when holding
+;; shift and wanting a non-shift version: like half pg up/down, and
+;; rect mark 
+
 ;; maybe add smooth scrolling??
 ;; make buffer name in modeline stand out...
 ;; adding keywords with font-lock can do so much highlighting......
@@ -11,6 +16,9 @@
 
 ;; look for other stuff in themes...?
 
+;; you can make a function that remembers a column number and then
+;; pastes whitespace until point reaches that column number for ease
+;; of formating
 
 ;; @CONFIGS
 
@@ -34,8 +42,12 @@
 (require 'wgrep)
 
 (add-to-list 'custom-theme-load-path "w:Emacs/themes")
-(load-theme 'moonrocks t)
+;; (load-theme 'moonrocks t)
 ;; (load-theme 'desert-sapphire t)
+;; (load-theme 'simplecoder t)
+;; (load-theme 'gruber-darker t)
+
+(load-theme 'naysayer t)
 
 ;; (set-face-attribute 'default nil :font "JetBrains Mono Regular-11")
 ;; (set-face-attribute 'default nil :font "Inconsolata-g-11")
@@ -46,7 +58,8 @@
 ;; (set-face-attribute 'default nil :font "JuliaMono ExtraBold-10")
 
 ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
-(set-face-attribute 'default nil :font "Consolas-12.5")
+;; (set-face-attribute 'default nil :font "Consolas-12.5")
+(set-face-attribute 'default nil :font "Consolas-13")
 
 (setq inhibit-splash-screen t)
 (setq visible-bell nil)
@@ -113,7 +126,7 @@
 (setq insert-heading-respect-content t) ;; this appears to not work...
 (setq org-log-done nil)
 (setq org-log-into-drawer nil)
-(setq org-agenda-files (directory-files-recursively "w:Notes/" "\\.org$"))
+;; (setq org-agenda-files (directory-files-recursively "w:Notes/" "\\.org$"))
 ;; figure out if this works...
 (setq org-todo-keywords '((sequence "TODO(t)" "|" "CANCEL(c!)" "DONE(d!)")))
 (setq org-image-actual-width nil)
@@ -142,6 +155,7 @@
     (setq cursor-type 'box)
     )
   )
+(add-hook 'find-file-hook #'__ToggleCommand)
 
 (defun __delete-word (arg)
   (interactive "p")
@@ -229,7 +243,7 @@
   (interactive "sChange to project: ")
   (load (concat arg1 ".el"))
   (cd (concat "w:/Projects/" project-name))
-  (if (string= arg1 "quick") (find-file "quick.c"))
+  ;; (if (string= arg1 "quick") (find-file "quick.c"))
   )
 
 ;; git init repo ?
@@ -242,6 +256,13 @@
   (shell-command "git push origin main")
   )
 
+(defun :quick-open ()
+  (interactive)
+  (load "quick.el")
+  (find-file "w:/Projects/quick/quick.c")
+  )
+
+;; if no scratch buffer then don't kill one..
 (defun :quick-run ()
   (interactive)
   (kill-buffer "*scratch*")
@@ -340,9 +361,14 @@
   (__save-all)
   )
 
+;; here I am not adding a datetime in front of the filename in
+;; order to make it unique, because we don't want to name these
+;; like that, so just make sure you don't have a conflicting filename
+;; when you create a new note... I quess find-file will just open the
+;; lates TBD in that case, which is good I thinks...
 (defun :note-create-in-general ()
   (interactive)
-  (find-file (concat "w:/Notes/" (format-time-string "%Y%m%d%H%M%S") "_TBD" ".org"))
+  (find-file (concat "w:/Notes/" "TBD" ".org"))
   (insert "#+TITLE: " "TBD" "\n")
   (insert "$:" "fleeting" "\n")
   (insert "Created on: " (format-time-string "%Y%m%d%H%M%S") "\n\n")
@@ -350,6 +376,8 @@
   (__save-all)
   )
 
+;; this doesn't work for general notes, because they don't have
+;; the datetime identifier in front anymore, maybe reverse..??
 (defun :note-rename (arg1)
   (interactive "sNew note title: ")
   (__save-all)
@@ -446,6 +474,7 @@
 (define-key __MyKeymap (kbd "v") 'set-mark-command)
 (define-key __MyKeymap (kbd "V") 'rectangle-mark-mode)
 (define-key __MyKeymap (kbd "w") 'yank)
+(define-key __MyKeymap (kbd "W") 'yank)
 (define-key __MyKeymap (kbd "t") 'undo)
 (define-key __MyKeymap (kbd "c") 'kill-ring-save)
 (define-key __MyKeymap (kbd "C") 'kill-region)
@@ -474,6 +503,7 @@
 (define-key __MyKeymap (kbd "=") 'quick-calc)
 (define-key __MyKeymap (kbd "0") 'beginning-of-defun) ;; maybe change these..?
 (define-key __MyKeymap (kbd "-") 'end-of-defun) ;; you ought to not use them that much anyway........
+(define-key __MyKeymap (kbd ".") 'xref-find-definitions)
 
 (define-key __MyKeymap (kbd "x c") '__compile)
 
@@ -516,6 +546,7 @@
 
 (define-key __MyKeymap (kbd "x f g p") ':git-push)
 
+(define-key __MyKeymap (kbd "x q o") ':quick-open)
 (define-key __MyKeymap (kbd "x q r") ':quick-run)
 (define-key __MyKeymap (kbd "x q s") ':quick-save)
 (define-key __MyKeymap (kbd "x q l") ':quick-load)
@@ -523,7 +554,7 @@
 (define-key __MyKeymap (kbd "x p n") ':project-new)
 (define-key __MyKeymap (kbd "x p s") ':project-switch)
 
-(define-key __MyKeymap (kbd "x n g") ':note-create-in-general)
+(define-key __MyKeymap (kbd "x n a") ':note-create-in-general)
 (define-key __MyKeymap (kbd "x n n") ':note-create-in-arena)
 (define-key __MyKeymap (kbd "x n r") ':note-rename)
 (define-key __MyKeymap (kbd "x n t") ':note-tagfile)
@@ -555,6 +586,8 @@
 
 ;; f3 - start macro
 ;; f4 - end macro, replay last macro
+
+;; in org moving by defuns moves by headers (other stuffs...??)
 
 ;; ? on command in minibuffer to show possible completions
 ;; SPC for find-file autocompletes
