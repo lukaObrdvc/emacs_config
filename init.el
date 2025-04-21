@@ -1,24 +1,5 @@
 ;; Emacs 29.3_2
 
-;; BIGGIE DEAL: when adding env vars, add them to PATH variable, not just as a new variable............
-
-
-;; dired should be a dedicated hotkey
-;; change the SHIFT versions of things not to be inconvenient when holding
-;; shift and wanting a non-shift version: like half pg up/down, and
-;; rect mark 
-
-;; maybe add smooth scrolling??
-;; make buffer name in modeline stand out...
-;; adding keywords with font-lock can do so much highlighting......
-;; how to bold text that begins with @ ??
-;; should probably add hl line...
-
-;; look for other stuff in themes...?
-
-;; you can make a function that remembers a column number and then
-;; pastes whitespace until point reaches that column number for ease
-;; of formating
 
 ;; @CONFIGS
 
@@ -31,11 +12,6 @@
 ;; add cd to default project here
 ;; split right as well by default
 ;; can also add some files to open on startup..?
-
-;; (custom-set-faces
-;;  '(default ((t (:background "#E0D8D0")))))
-;; (custom-set-faces
-;;  '(fringe ((t (:background "#E0D8D0")))))
 
 
 (add-to-list 'load-path "w:/Emacs/packages")
@@ -65,9 +41,6 @@
 (setq visible-bell nil)
 (set-message-beep 'silent)
 (set-default 'truncate-lines t) ;; disables wrapping
-;; (setq visual-wrap-prefix-mode t)     ???
-;; (setq global-visual-wrap-prefix-mode t)   ???
-
 
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
@@ -80,19 +53,28 @@
 (global-display-line-numbers-mode -1)
 (blink-cursor-mode -1)
 (show-paren-mode 1)
-(abbrev-mode 1)
 (setq blink-matching-paren t)
 ;; (recentf-mode 1)
 ;; (save-place-mode 1)
-(global-auto-revert-mode 1) ;; for ** buffers as well exists one....
+(global-auto-revert-mode 1)
+;; (global-auto-revert-non-file-buffers 1)
 
+(setq case-fold-search nil)
 ;; (setq isearch-allow-scroll t)
 ;; (setq isearch-lazy-count t)
 
+;; ido, fido, abbrev
+(abbrev-mode 1)
+;; (setq abbrev-ignore-case nil)
+;; (setq abbrev-case-fold nil)
+;; (setq abbrev-all-caps nil)
 (require 'ido)
+(setq ido-everywhere t)
 (ido-mode t)
-(ido-everywhere t)
-(fido-mode t)
+;; (fido-mode t)
+(setq ido-auto-merge-work-directories-length -1)
+
+;; (desktop-save-mode 1)
 
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
@@ -104,10 +86,10 @@
 
 (eval-after-load 'grep '(setq grep-use-null-device nil))
 
-(push '("\\*completions\\*"
-        (display-buffer-use-some-window display-buffer-pop-up-window)
-        (inhibit-same-window . t))
-      display-buffer-alist)
+;; (push '("\\*completions\\*"
+;;         (display-buffer-use-some-window display-buffer-pop-up-window)
+;;         (inhibit-same-window . t))
+;;       display-buffer-alist)
 
 (defvar __MyKeymap (make-sparse-keymap))
 (define-minor-mode __MyMode
@@ -178,21 +160,20 @@
     (move-to-column col))
   )
 
-;; doesn't close org stuff..?
-;; also doesn't work on dired
 (defun __clean-system-buffers ()
   (interactive)
   (dolist (buf (buffer-list))
-    (when (string-match-p "\\*.*\\*" (buffer-name buf))
-      (kill-buffer buf)))
-  )
+    (with-current-buffer buf
+      (when (or (string-match-p "\\*.*\\*" (buffer-name buf))
+                (eq major-mode 'dired-mode))
+        (kill-buffer buf)))))
 
 ;; Inhibit message when there is something to save ??
 (defun __save-all ()   ;; change to :save ??
   (interactive)
   (save-some-buffers t)
   )
-(run-with-timer 0 30 '__save-all) ;; is this stopping to work at some points?????
+(run-with-timer 0 30 '__save-all)
 
 (defun __init-project-name (arg1)
   (interactive "sChoose project name: ")
@@ -291,7 +272,6 @@
   (find-file "w:/Emacs/init.el")
   )
 
-;; automatic, async, better xref window ...?
 (defun :tags-make ()
   (interactive)
   (__save-all)
@@ -341,7 +321,6 @@
   (grep (format "rg --with-filename --line-number --ignore-case --regexp=\"%s\" -- %s" arg1 (buffer-file-name)))
   )
 
-;; other-window 1 and -1 for these.... idk how to make it work....
 (defun __compile ()
   (interactive)
   (__save-all)
@@ -402,8 +381,6 @@
   (find-file "w:/Notes/tags.org")
   )
 
-;; perhaps add one that simply lists all files by searching $: ...
-;; actually using :note-tagsearch with no input does that...
 (defun :note-ripgrep (arg1)
   (interactive "sripgrep notes: ")
   (__save-all)
@@ -419,7 +396,6 @@
   (if (= (count-windows) 1) (split-window-right))
   (cd "w:/Notes/")
   
-  ;; Extract NOT, OR, AND tags using regex
   (let* ((not-tags (if (string-match "~\\([^+|~]+\\)" query)
                        (match-string 1 query) ""))
          (or-tags  (if (string-match "|\\([^+|~]+\\)" query)
@@ -427,7 +403,6 @@
          (and-tags (if (string-match "+\\([^+|~]+\\)" query)
                        (match-string 1 query) ""))
          
-         ;; Convert extracted tags into the correct ripgrep format
          (not-part (if (string-empty-p not-tags) ""
                      (format "(?!.*\\b(?:%s)\\b)" 
                              (replace-regexp-in-string "," "|" not-tags))))
@@ -447,7 +422,8 @@
 
 ;; @KEYBINDINGS
 
-(global-set-key (kbd "<f19>") #'__ToggleCommand) ;; this is caps lock, use Windows Power Tools to remap to f19
+;; this is caps lock, use Windows Power Tools to remap to f19
+(global-set-key (kbd "<f19>") #'__ToggleCommand)
 (global-set-key (kbd "<tab>") 'dabbrev-expand)
 
 (define-key __MyKeymap (kbd "SPC") #'__ToggleInsert)
@@ -457,8 +433,8 @@
 (define-key __MyKeymap (kbd "l") 'forward-char)
 (define-key __MyKeymap (kbd "J") 'left-word)
 (define-key __MyKeymap (kbd "L") 'right-word)
-(define-key __MyKeymap (kbd "I") #'(lambda () (interactive) (move-to-window-line 0) (previous-line)))
-(define-key __MyKeymap (kbd "K") #'(lambda () (interactive) (move-to-window-line -1) (next-line)))
+(define-key __MyKeymap (kbd "4") #'(lambda () (interactive) (move-to-window-line 0) (previous-line)))
+(define-key __MyKeymap (kbd "5") #'(lambda () (interactive) (move-to-window-line -1) (next-line)))
 (define-key __MyKeymap (kbd "a") 'move-beginning-of-line)
 (define-key __MyKeymap (kbd "e") 'move-end-of-line)
 (define-key __MyKeymap (kbd "A") 'move-beginning-of-line)
@@ -467,43 +443,56 @@
 (define-key __MyKeymap (kbd "f") 'backward-delete-char)
 (define-key __MyKeymap (kbd "D") #'__delete-word)
 (define-key __MyKeymap (kbd "F") #'__backward-delete-word)
-;;(define-key __MyKeymap (kbd "D") 'kill-word)
-;;(define-key __MyKeymap (kbd "F") 'backward-kill-word)
 (define-key __MyKeymap (kbd "s") 'newline)
-(define-key __MyKeymap (kbd "S") 'open-line)
+(define-key __MyKeymap (kbd "S") 'newline)
 (define-key __MyKeymap (kbd "v") 'set-mark-command)
-(define-key __MyKeymap (kbd "V") 'rectangle-mark-mode)
+(define-key __MyKeymap (kbd "V") 'set-mark-command)
+(define-key __MyKeymap (kbd ",") 'rectangle-mark-mode)
+(define-key __MyKeymap (kbd "<") 'rectangle-mark-mode)
 (define-key __MyKeymap (kbd "w") 'yank)
 (define-key __MyKeymap (kbd "W") 'yank)
 (define-key __MyKeymap (kbd "t") 'undo)
+(define-key __MyKeymap (kbd "T") 'undo)
 (define-key __MyKeymap (kbd "c") 'kill-ring-save)
-(define-key __MyKeymap (kbd "C") 'kill-region)
+(define-key __MyKeymap (kbd "C") 'kill-ring-save)
+(define-key __MyKeymap (kbd "z") 'kill-region)
+(define-key __MyKeymap (kbd "Z") 'kill-region)
 (define-key __MyKeymap (kbd "r") 'kill-line)
-(define-key __MyKeymap (kbd "R") '__duplicate-line)
-(define-key __MyKeymap (kbd "g") 'recenter-top-bottom)
-;; (define-key __MyKeymap (kbd "/") 'keyboard-quit) (this is bad because you can only use it on set-mark, so you might as well use C-g for that too...)
+(define-key __MyKeymap (kbd "R") 'kill-line)
+;; (define-key __MyKeymap (kbd "R") '__duplicate-line)
+(define-key __MyKeymap (kbd "g") 'recenter)
+(define-key __MyKeymap (kbd "G") 'recenter)
 (define-key __MyKeymap (kbd "b") (kbd "C-u C-SPC")) ;; pop mark
-(define-key __MyKeymap (kbd "B") 'pop-global-mark)
+(define-key __MyKeymap (kbd "B") (kbd "C-u C-SPC")) ;; pop mark
+;; (define-key __MyKeymap (kbd "B") 'pop-global-mark)
 (define-key __MyKeymap (kbd "<tab>") 'indent-for-tab-command)
 (define-key __MyKeymap (kbd "q") 'other-window)
-(define-key __MyKeymap (kbd "z") 'execute-extended-command)
-(define-key __MyKeymap (kbd "u") 'isearch-forward)
-(define-key __MyKeymap (kbd "U") 'isearch-backward)
+(define-key __MyKeymap (kbd "Q") 'other-window)
+(define-key __MyKeymap (kbd "/") 'execute-extended-command)
+(define-key __MyKeymap (kbd "n") 'isearch-forward)
+(define-key __MyKeymap (kbd "N") 'isearch-forward)
+(define-key __MyKeymap (kbd "p") 'isearch-backward)
+(define-key __MyKeymap (kbd "P") 'isearch-backward)
 (define-key __MyKeymap (kbd "m") 'replace-string)
-(define-key __MyKeymap (kbd "M") 'string-insert-rectangle)
+(define-key __MyKeymap (kbd "M") 'replace-string)
+(define-key __MyKeymap (kbd ".") 'string-insert-rectangle)
+(define-key __MyKeymap (kbd ">") 'string-insert-rectangle)
 (define-key __MyKeymap (kbd "h") 'switch-to-buffer)
 (define-key __MyKeymap (kbd "H") #'(lambda () (interactive) (switch-to-buffer (other-buffer))))
 (define-key __MyKeymap (kbd "y") 'find-file)
-(define-key __MyKeymap (kbd "Y") 'project-find-file)
-(define-key __MyKeymap (kbd "o") 'imenu)
-(define-key __MyKeymap (kbd ";") 'comment-line)
-(define-key __MyKeymap (kbd "n") 'next-error)
-(define-key __MyKeymap (kbd "N") 'previous-error)
+(define-key __MyKeymap (kbd "Y") 'find-file)
+;; (define-key __MyKeymap (kbd "Y") 'project-find-file) make this a command probably instead
+;; (define-key __MyKeymap (kbd "o") 'imenu)
+(define-key __MyKeymap (kbd "'") 'comment-line)
+(define-key __MyKeymap (kbd "\\") 'next-error)
+(define-key __MyKeymap (kbd "]") 'previous-error)
 (define-key __MyKeymap (kbd "`") '__clean-system-buffers)
 (define-key __MyKeymap (kbd "=") 'quick-calc)
-(define-key __MyKeymap (kbd "0") 'beginning-of-defun) ;; maybe change these..?
-(define-key __MyKeymap (kbd "-") 'end-of-defun) ;; you ought to not use them that much anyway........
-(define-key __MyKeymap (kbd ".") 'xref-find-definitions)
+(define-key __MyKeymap (kbd "1") 'beginning-of-defun)
+(define-key __MyKeymap (kbd "2") 'end-of-defun)
+(define-key __MyKeymap (kbd "7") 'backward-list)
+(define-key __MyKeymap (kbd "8") 'forward-list)
+(define-key __MyKeymap (kbd "3") 'xref-find-definitions)
 
 (define-key __MyKeymap (kbd "x c") '__compile)
 
@@ -527,14 +516,13 @@
 (define-key __MyKeymap (kbd "x e i") 'beginning-of-buffer)
 (define-key __MyKeymap (kbd "x e k") 'end-of-buffer)
 (define-key __MyKeymap (kbd "x e h") 'delete-horizontal-space)
-(define-key __MyKeymap (kbd "x e j") 'backward-list) ;; maybe make these two regular keybindings?
-(define-key __MyKeymap (kbd "x e l") 'forward-list) ;; there's also backward-up-list, down-list
+;; (define-key __MyKeymap (kbd "x e j") 'backward-list)
+;; (define-key __MyKeymap (kbd "x e l") 'forward-list)
 (define-key __MyKeymap (kbd "x e p") 'insert-parentheses)
 (define-key __MyKeymap (kbd "x e u") 'delete-pair)
 (define-key __MyKeymap (kbd "x e g") 'goto-line)
 
 (define-key __MyKeymap (kbd "x w d") 'split-window-below)
-;; (define-key __MyKeymap (kbd "x w r") 'split-window-right) ;; actually don't need this just use the lambda one instead
 (define-key __MyKeymap (kbd "x w c") 'delete-other-windows)
 (define-key __MyKeymap (kbd "x w q") 'delete-window)
 (define-key __MyKeymap (kbd "x w r") #'(lambda () (interactive) (delete-other-windows)(split-window-right)))
@@ -543,6 +531,11 @@
 ;; (define-key __MyKeymap (kbd "x g b") '__grep-current-buffer-only)
 (define-key __MyKeymap (kbd "x g g") '__ripgrep)
 (define-key __MyKeymap (kbd "x g b") '__ripgrep-current-buffer-only)
+
+;; @WARNING THIS STUFF JUST DOES NOT WORK CHANGE FAST............
+;; if you use this on a non-grep buffer, do M-x read-only-mode
+(define-key __MyKeymap (kbd "x r s") (kbd "C-c C-p"))
+(define-key __MyKeymap (kbd "x r f") 'wgrep-finish-edit)
 
 (define-key __MyKeymap (kbd "x f g p") ':git-push)
 
@@ -568,24 +561,57 @@
 (define-key __MyKeymap (kbd "x o l") 'org-latex-preview)
 (define-key __MyKeymap (kbd "x o o") 'org-open-at-point)
 
-;; if you use this on a non-grep buffer, do M-x read-only-mode
-;;(global-set-key (kbd "C-S-w") 'wgrep-finish-edit) ;; saves wgrep changes
-;;(global-set-key (kbd "C-w") (kbd "C-c C-p")) ;; turns wgrep on
+;; f3 - start macro
+;; f4 - end macro, replay last macro
 
+
+(define-key __MyKeymap (kbd "u") #'ignore)
+(define-key __MyKeymap (kbd "o") #'ignore)
+(define-key __MyKeymap (kbd ";") #'ignore)
+(define-key __MyKeymap (kbd "6") #'ignore)
+(define-key __MyKeymap (kbd "K") #'ignore)
+(define-key __MyKeymap (kbd "I") #'ignore)
+
+
+;; @TODO
+
+;; make wgrep work
+;; git stuff needed,  MAGIT, diff
+;; project stuff needed
+;; dired stuff and directory in general
+;; desktop-save-mode??
+
+;; theme stuffs
 
 ;; run project...
 
 ;; delete-file
-;; rename-file          +refactoring
+;; rename-file
 ;; make-directory
 ;; rename-directory
 ;; delete-directory
-;; ido-list-directory
+;; ido-list-directory or similar...
+
+
+
+;; rename certain commands to prefix with : , also Pascal case or something in this direction
+
+;; adding keywords with font-lock can do so much highlighting......
+;; how to bold text that begins with @ ??
+
+;; you can make a function that remembers a column number and then
+;; pastes whitespace until point reaches that column number for ease
+;; of formating
+;; formating for code stuff, and formating for text stuff when adding in text
+
+
+;; upcase region (lowercase?)
+;; maybe change to .txt default for notes, and also maybe use dired for notes
+;; automatic guard?
+
+
 
 ;; @INFO
-
-;; f3 - start macro
-;; f4 - end macro, replay last macro
 
 ;; in org moving by defuns moves by headers (other stuffs...??)
 
