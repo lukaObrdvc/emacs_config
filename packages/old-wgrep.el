@@ -920,7 +920,7 @@ NEW may be nil this means deleting whole line."
 (defface wgrep-face
   '((((class color)
       (background dark))
-     (:background "SlateGray1" :foreground "Black"))
+     (:background "#132035")) ;; was SlateGray1 "Black"
     (((class color)
       (background light))
      (:background "ForestGreen" :foreground "white"))

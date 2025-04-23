@@ -8,21 +8,17 @@
 (defvar build-script-directory "w:/Projects/vgengine/code")
 (defvar build-script-name "build")
 (defvar project-name "vgengine")
-(defvar code-file-extensions "*.h *.c")
-;; add cd to default project here
-;; split right as well by default
-;; can also add some files to open on startup..?
+(defvar code-file-extensions "cpp,h")
+(cd (concat "w:/Projects/" project-name))
 
 
-(add-to-list 'load-path "w:/Emacs/packages")
-(require 'wgrep)
+;; (add-to-list 'load-path "w:/Emacs/packages")
 
 (add-to-list 'custom-theme-load-path "w:Emacs/themes")
 ;; (load-theme 'moonrocks t)
 ;; (load-theme 'desert-sapphire t)
 ;; (load-theme 'simplecoder t)
 ;; (load-theme 'gruber-darker t)
-
 (load-theme 'naysayer t)
 
 ;; (set-face-attribute 'default nil :font "JetBrains Mono Regular-11")
@@ -32,10 +28,11 @@
 ;; (set-face-attribute 'default nil :font "Iosevka-12")
 ;; (set-face-attribute 'default nil :font "Cascadia Mono-11")
 ;; (set-face-attribute 'default nil :font "JuliaMono ExtraBold-10")
-
 ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
+;; (set-face-attribute 'default nil :font "Courier New-13")
 ;; (set-face-attribute 'default nil :font "Consolas-12.5")
 (set-face-attribute 'default nil :font "Consolas-13")
+;; (set-face-attribute 'default nil :font "Consolas-16")
 
 (setq inhibit-splash-screen t)
 (setq visible-bell nil)
@@ -62,8 +59,9 @@
 (setq case-fold-search nil)
 ;; (setq isearch-allow-scroll t)
 ;; (setq isearch-lazy-count t)
+(define-key isearch-mode-map (kbd "C-g") (lambda ()(interactive)(isearch-cancel)))
 
-;; ido, fido, abbrev
+;; ------ ido, fido, abbrev
 (abbrev-mode 1)
 ;; (setq abbrev-ignore-case nil)
 ;; (setq abbrev-case-fold nil)
@@ -71,12 +69,19 @@
 (require 'ido)
 (setq ido-everywhere t)
 (ido-mode t)
+(setq ido-enable-flex-matching t)
+(setq ido-case-fold t)
+(setq read-buffer-completion-ignore-case t)
+(setq read-file-name-completion-ignore-case t)
 ;; (fido-mode t)
 (setq ido-auto-merge-work-directories-length -1)
+;; ------
 
 ;; (desktop-save-mode 1)
 
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+
+(setq initial-scratch-message nil)
 
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -85,11 +90,6 @@
 (setq undo-strong-limit 200000)
 
 (eval-after-load 'grep '(setq grep-use-null-device nil))
-
-;; (push '("\\*completions\\*"
-;;         (display-buffer-use-some-window display-buffer-pop-up-window)
-;;         (inhibit-same-window . t))
-;;       display-buffer-alist)
 
 (defvar __MyKeymap (make-sparse-keymap))
 (define-minor-mode __MyMode
@@ -160,7 +160,7 @@
     (move-to-column col))
   )
 
-(defun __clean-system-buffers ()
+(defun :clean-system-buffers ()
   (interactive)
   (dolist (buf (buffer-list))
     (with-current-buffer buf
@@ -169,11 +169,11 @@
         (kill-buffer buf)))))
 
 ;; Inhibit message when there is something to save ??
-(defun __save-all ()   ;; change to :save ??
+(defun :save-all ()   ;; change to :save ??
   (interactive)
   (save-some-buffers t)
   )
-(run-with-timer 0 30 '__save-all)
+(run-with-timer 0 30 ':save-all)
 
 (defun __init-project-name (arg1)
   (interactive "sChoose project name: ")
@@ -191,7 +191,7 @@
   )
 
 (defun __init-code-file-extensions (arg1)
-  (interactive "sLanguage file extensions (ex. \"*.h *.c\"): ")
+  (interactive "sLanguage file extensions (ex. \"cpp,h\"): ")
   (setq code-file-extensions arg1)
   )
 
@@ -224,14 +224,14 @@
   (interactive "sChange to project: ")
   (load (concat arg1 ".el"))
   (cd (concat "w:/Projects/" project-name))
-  ;; (if (string= arg1 "quick") (find-file "quick.c"))
+  ;; (if (string= arg1 "quick") (find-file "quick.c")) :quick-open does this?
   )
 
 ;; git init repo ?
 ;; git pull ?
 (defun :git-push (arg1)
   (interactive "sCommit message: ")
-  (__save-all)
+  (:save-all)
   (shell-command "git add .")
   (shell-command (format "git commit -m \"%s\"" arg1))
   (shell-command "git push origin main")
@@ -257,7 +257,7 @@
 ;; automatic :git-push
 (defun :quick-save (arg1)
   (interactive "sChoose name for quick: ")
-  (__save-all)
+  (:save-all)
   (copy-file "w:/Projects/quick/quick.c" (concat "w:/Quicks/src/" arg1 ".c"))
   (copy-file "w:/Projects/quick/exe/quick.exe" (concat "w:/Quicks/exe/" arg1 ".exe"))
   )
@@ -274,7 +274,7 @@
 
 (defun :tags-make ()
   (interactive)
-  (__save-all)
+  (:save-all)
   (cd (concat "w:/Projects/" project-name "/"))
   (shell-command "ctags -e -R")
   (cd (file-name-directory buffer-file-name))
@@ -282,25 +282,25 @@
 
 (defun __grep (arg1)
   (interactive "sgrep findstr: ")
-  (__save-all)
+  (:save-all)
   (if (= (count-windows) 1) (split-window-right))
   (cd (concat "w:/Projects/" project-name "/"))
   (grep (format "findstr -s -n -i -r \"%s\" %s" arg1 code-file-extensions))
   (cd (file-name-directory buffer-file-name))
   )
 
-(defun __ripgrep (arg1)
+(defun :ripgrep (arg1)
   (interactive "sripgrep: ")
-  (__save-all)
+  (:save-all)
   (if (= (count-windows) 1) (split-window-right))
   (cd (concat "w:/Projects/" project-name "/"))
-  (grep (format "rg --line-number --ignore-case --regexp=\"%s\" --glob=\"*.{c,h}\" ." arg1));;code-file-extensions))
+  (grep (format "rg --line-number --ignore-case --regexp=\"%s\" --glob=\"*.{%s}\" ." arg1 code-file-extensions))
   (cd (file-name-directory buffer-file-name))
   )
 
-(defun __ripgrep-c-functions ()
+(defun :ripgrep-c-functions ()
   (interactive)
-  (__save-all)
+  (:save-all)
   (if (= (count-windows) 1) (split-window-right))
   (cd (concat "w:/Projects/" project-name "/"))
   (grep "rg --line-number --ignore-case --regexp=\"^[[:space:]]*(inline|static|extern)?[[:space:]]*[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]+[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*\\([^)]*\\)[[:space:]]*\\{?$\" --glob=\"*.c\" --glob=\"*.h\" .")
@@ -309,21 +309,21 @@
 
 (defun __grep-current-buffer-only (arg1)
   (interactive "sgrep findstr: ")
-  (__save-all)
+  (:save-all)
   (if (= (count-windows) 1) (split-window-right))
   (grep (format "findstr -s -n -i -r \"%s\" %s" arg1 (buffer-file-name)))
   )
 
-(defun __ripgrep-current-buffer-only (arg1)
+(defun :ripgrep-current-buffer-only (arg1)
   (interactive "sripgrep buffer: ")
-  (__save-all)
+  (:save-all)
   (if (= (count-windows) 1) (split-window-right))
   (grep (format "rg --with-filename --line-number --ignore-case --regexp=\"%s\" -- %s" arg1 (buffer-file-name)))
   )
 
-(defun __compile ()
+(defun :compile ()
   (interactive)
-  (__save-all)
+  (:save-all)
   (if (= (count-windows) 1) (split-window-right))
   (cd build-script-directory)
   (compile build-script-name)
@@ -337,7 +337,7 @@
   (insert "$:" "fleeting" "\n")
   (insert "Created on: " (format-time-string "%Y%m%d%H%M%S") "\n\n")
   (insert "* Overview" "\n")
-  (__save-all)
+  (:save-all)
   )
 
 ;; here I am not adding a datetime in front of the filename in
@@ -352,14 +352,14 @@
   (insert "$:" "fleeting" "\n")
   (insert "Created on: " (format-time-string "%Y%m%d%H%M%S") "\n\n")
   (insert "* Overview" "\n")
-  (__save-all)
+  (:save-all)
   )
 
 ;; this doesn't work for general notes, because they don't have
 ;; the datetime identifier in front anymore, maybe reverse..??
 (defun :note-rename (arg1)
   (interactive "sNew note title: ")
-  (__save-all)
+  (:save-all)
   (let* ((Dir (file-name-directory buffer-file-name))
          (NewName (concat (substring (file-name-base buffer-file-name) 0 14) "_" arg1 ".org"))
          (NewPath (concat Dir NewName))
@@ -383,7 +383,7 @@
 
 (defun :note-ripgrep (arg1)
   (interactive "sripgrep notes: ")
-  (__save-all)
+  (:save-all)
   (if (= (count-windows) 1) (split-window-right))
   (cd "w:/Notes/")
   (grep (format "rg --line-number --ignore-case --regexp=\"%s\" --glob=\"*.org\" ." arg1))
@@ -392,7 +392,7 @@
 
 (defun :note-tagsearch (query)
   (interactive "sSearch notes by tags (+AND, |OR, ~NOT): ")
-  (__save-all)
+  (:save-all)
   (if (= (count-windows) 1) (split-window-right))
   (cd "w:/Notes/")
   
@@ -420,6 +420,49 @@
   (cd (file-name-directory buffer-file-name))
   )
 
+
+(define-derived-mode grep-edit-mode text-mode "GrepEdit"
+  (setq-local buffer-read-only nil)
+  (let ((inhibit-read-only t))
+    (remove-overlays)
+    (remove-text-properties (point-min) (point-max) '(read-only t)))
+  )
+
+(defun __evil-wgrep-unfuck-buffer ()
+  (interactive)
+  (grep-edit-mode)
+  (setq buffer-read-only nil)
+  (let ((inhibit-read-only t))
+    (remove-overlays)
+    (remove-text-properties (point-min) (point-max) '(read-only t)))
+  (message "Buffer fully unlocked. Edit freely, then M-x __evil-wgrep-save.")
+  )
+
+(defun __evil-wgrep-save-if-diff ()
+  (interactive)
+  (let ((count 0))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^\\([^:\n]+\\):\\([0-9]+\\):" nil t)
+        (let* ((file (match-string 1))
+               (line-num (string-to-number (match-string 2)))
+               (new-line (buffer-substring-no-properties (point) (line-end-position))))
+          (when (file-exists-p file)
+            (with-temp-buffer
+              (insert-file-contents file)
+              (goto-char (point-min))
+              (forward-line (1- line-num))
+              (let ((original-line (buffer-substring-no-properties
+                                    (line-beginning-position)
+                                    (line-end-position))))
+                (unless (string-equal new-line original-line)
+                  (delete-region (line-beginning-position) (line-end-position))
+                  (insert new-line)
+                  (write-region (point-min) (point-max) file nil 'silent)
+                  (setq count (1+ count)))))))))
+    (message "Saved %d modified line(s)." count))
+  )
+
 ;; @KEYBINDINGS
 
 ;; this is caps lock, use Windows Power Tools to remap to f19
@@ -433,8 +476,8 @@
 (define-key __MyKeymap (kbd "l") 'forward-char)
 (define-key __MyKeymap (kbd "J") 'left-word)
 (define-key __MyKeymap (kbd "L") 'right-word)
-(define-key __MyKeymap (kbd "4") #'(lambda () (interactive) (move-to-window-line 0) (previous-line)))
-(define-key __MyKeymap (kbd "5") #'(lambda () (interactive) (move-to-window-line -1) (next-line)))
+(define-key __MyKeymap (kbd "3") #'(lambda () (interactive) (move-to-window-line 0) (previous-line)))
+(define-key __MyKeymap (kbd "4") #'(lambda () (interactive) (move-to-window-line -1) (next-line)))
 (define-key __MyKeymap (kbd "a") 'move-beginning-of-line)
 (define-key __MyKeymap (kbd "e") 'move-end-of-line)
 (define-key __MyKeymap (kbd "A") 'move-beginning-of-line)
@@ -486,15 +529,16 @@
 (define-key __MyKeymap (kbd "'") 'comment-line)
 (define-key __MyKeymap (kbd "\\") 'next-error)
 (define-key __MyKeymap (kbd "]") 'previous-error)
-(define-key __MyKeymap (kbd "`") '__clean-system-buffers)
+(define-key __MyKeymap (kbd "`") ':clean-system-buffers)
 (define-key __MyKeymap (kbd "=") 'quick-calc)
 (define-key __MyKeymap (kbd "1") 'beginning-of-defun)
 (define-key __MyKeymap (kbd "2") 'end-of-defun)
 (define-key __MyKeymap (kbd "7") 'backward-list)
 (define-key __MyKeymap (kbd "8") 'forward-list)
-(define-key __MyKeymap (kbd "3") 'xref-find-definitions)
+(define-key __MyKeymap (kbd "5") 'xref-find-definitions)
+;; (define-key __MyKeymap (kbd ";") (kbd "C-g")) what is the name of command?
 
-(define-key __MyKeymap (kbd "x c") '__compile)
+(define-key __MyKeymap (kbd "x c") ':compile)
 
 (define-key __MyKeymap (kbd "x h d f") 'describe-function)
 (define-key __MyKeymap (kbd "x h d v") 'describe-variable)
@@ -507,7 +551,7 @@
 (define-key __MyKeymap (kbd "x m c") ':config)
 (define-key __MyKeymap (kbd "x m t") ':tags-make)
 (define-key __MyKeymap (kbd "x m s") 'scratch-buffer)
-(define-key __MyKeymap (kbd "x m a") '__save-all)
+(define-key __MyKeymap (kbd "x m a") ':save-all)
 (define-key __MyKeymap (kbd "x m o") 'occur)
 (define-key __MyKeymap (kbd "x m d") 'dired)
 (define-key __MyKeymap (kbd "x m b") 'kill-buffer)
@@ -529,13 +573,11 @@
 
 ;; (define-key __MyKeymap (kbd "x g g") '__grep)
 ;; (define-key __MyKeymap (kbd "x g b") '__grep-current-buffer-only)
-(define-key __MyKeymap (kbd "x g g") '__ripgrep)
-(define-key __MyKeymap (kbd "x g b") '__ripgrep-current-buffer-only)
+(define-key __MyKeymap (kbd "x g g") ':ripgrep)
+(define-key __MyKeymap (kbd "x g b") ':ripgrep-current-buffer-only)
 
-;; @WARNING THIS STUFF JUST DOES NOT WORK CHANGE FAST............
-;; if you use this on a non-grep buffer, do M-x read-only-mode
-(define-key __MyKeymap (kbd "x r s") (kbd "C-c C-p"))
-(define-key __MyKeymap (kbd "x r f") 'wgrep-finish-edit)
+(define-key __MyKeymap (kbd "x r s") #'__evil-wgrep-unfuck-buffer)
+(define-key __MyKeymap (kbd "x r f") #'__evil-wgrep-save-if-diff)
 
 (define-key __MyKeymap (kbd "x f g p") ':git-push)
 
@@ -575,13 +617,14 @@
 
 ;; @TODO
 
-;; make wgrep work
+;; make wgrep be case sensitive blud.......
+
 ;; git stuff needed,  MAGIT, diff
 ;; project stuff needed
 ;; dired stuff and directory in general
 ;; desktop-save-mode??
-
 ;; theme stuffs
+;; polish keybindings
 
 ;; run project...
 
@@ -594,6 +637,9 @@
 
 
 
+;; less important here:
+
+
 ;; rename certain commands to prefix with : , also Pascal case or something in this direction
 
 ;; adding keywords with font-lock can do so much highlighting......
@@ -604,11 +650,12 @@
 ;; of formating
 ;; formating for code stuff, and formating for text stuff when adding in text
 
-
 ;; upcase region (lowercase?)
 ;; maybe change to .txt default for notes, and also maybe use dired for notes
 ;; automatic guard?
 
+
+;; grep editting stuff???
 
 
 ;; @INFO
@@ -619,6 +666,10 @@
 ;; SPC for find-file autocompletes
 ;; you can change font size with mouse wheel, and in the buffer border you can see offset from original
 ;; can press Q on a lot of emacs' buffers to close them instantly
+
+;; if you press caps-lock while in minibuffer can you hit your Quit hotkey
+;; and get it to work there??? (yes but not for isearch, because hitting
+;; caps-lock gets out of it...)
 
 
 
