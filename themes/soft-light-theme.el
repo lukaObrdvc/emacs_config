@@ -1,0 +1,90 @@
+(deftheme soft-light "THIS THEME IS MYYYYYYYYYYYYYYY.")
+
+(defun myface (name &rest args)
+  (list name `((t, args)) )
+  )
+
+(let
+    (
+     (bg "#d8c8c8")
+     (fg "#2A0A00")
+     (keyword "#3C2050")
+     (type "#104040")
+     (function "#2A0A00")
+     (variable "#603020")
+     (preproc "#504010")
+     (literal "#452301")
+     (comment "#103D20")
+     
+     (region_bg "#e0e0e0")
+     (caret "#305030")
+     (hl_line "#c0c0c0")
+
+     (modeline "#a09090")
+     (modeline_active "#80a040")
+     (fringe "#a09090")
+     (bufferid "#988878")
+     (border "#404020")
+     
+     (red "#aa0000")
+     (green "#00aa00")
+     (blue "#0000aa")
+     (orange "#aa8000")
+     )
+
+  (custom-theme-set-faces `simplecoder
+                          
+                          (myface 'default :background bg :foreground fg)
+                          (myface 'bold :foreground fg :bold t)
+                          (myface 'italic :foreground fg :italic t)
+                          (myface 'bold-italic :foreground fg :bold t :italic t)
+                          (myface 'underline :inherit 'default)
+                          (myface 'custom-face-tag :inherit 'default)
+                          (myface 'custom-state :inherit 'default)
+                          (myface 'fringe :background fringe)
+                          (myface 'vertical-border :foreground border :background border)
+                          (myface 'internal-border :foreground border :background border)
+
+                          (myface 'font-lock-builtin-face :inherit 'default)
+                          (myface 'font-lock-variable-name-face :foreground variable)
+                          (myface 'font-lock-function-name-face :foreground function)
+                          (myface 'font-lock-comment-delimiter-face :foreground comment)
+                          (myface 'font-lock-comment-face :foreground comment)
+                          (myface 'font-lock-constant-face :inherit 'default)
+                          (myface 'font-lock-keyword-face :foreground keyword)
+                          (myface 'font-lock-preprocessor-face :foreground preproc)
+                          (myface 'font-lock-string-face :foreground literal)
+                          (myface 'font-lock-type-face :foreground type)
+                          (myface 'font-lock-warning-face :foreground red)
+
+                          ;; (myface 'success :foreground green)
+                          ;; (myface 'error :foreground red)
+                          ;; (myface 'warning :foreground orange)
+
+                          (myface 'highlight :background region_bg)
+                          (myface 'hl-line :background hl_line)
+                          (myface 'cursor :background caret)
+                          (myface 'region :background region_bg)
+
+                          (myface 'mode-line :background modeline_active :foreground fg :box '(:line-width -1 :color "#553311"))
+                          (myface 'mode-line-buffer-id :background bufferid :foreground fg :bold t)
+                          (myface 'mode-line-inactive :background modeline :foreground fg)
+                          (myface 'mode-line-emphasis :background modeline :foreground fg)
+                          (myface 'mode-line-highlight :background modeline :foreground fg)
+                          (myface 'gui-element :background modeline :foreground fg)
+                          (myface 'minibuffer-prompt :foreground type)
+
+                          (myface 'org-level-1 :foreground keyword :bold t)
+                          (myface 'org-level-2 :foreground keyword :bold t)
+                          (myface 'org-level-3 :foreground keyword :bold t)
+                          (myface 'org-level-4 :foreground keyword :bold t)
+                          (myface 'org-level-5 :foreground keyword :bold t)
+                          (myface 'org-level-6 :foreground keyword :bold t)
+                          (myface 'org-level-7 :foreground keyword :bold t)
+                          (myface 'org-level-8 :foreground keyword :bold t)
+                          (myface 'org-level-9 :foreground keyword :bold t)
+                          
+                          )
+  )
+
+(provide-theme 'soft-light)

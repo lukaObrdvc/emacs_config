@@ -1,5 +1,6 @@
 ;; Emacs 29.3_2
 
+;; isearch counter
 
 ;; @CONFIGS
 
@@ -11,7 +12,6 @@
 (defvar code-file-extensions "cpp,h")
 (cd (concat "w:/Projects/" project-name))
 
-
 ;; (add-to-list 'load-path "w:/Emacs/packages")
 
 (add-to-list 'custom-theme-load-path "w:Emacs/themes")
@@ -19,20 +19,31 @@
 ;; (load-theme 'desert-sapphire t)
 ;; (load-theme 'simplecoder t)
 ;; (load-theme 'gruber-darker t)
-(load-theme 'naysayer t)
+;; (load-theme 'naysayer t)
+;; (load-theme 'vscode-dark-plus t)
+;; (load-theme 'vs-light t)
+;; (load-theme 'professional t)
+;; (load-theme 'timu-macos t)
+;; (load-theme 'tsdh-light t)
+;; (load-theme 'ef-cyprus t)
 
-;; (set-face-attribute 'default nil :font "JetBrains Mono Regular-11")
-;; (set-face-attribute 'default nil :font "Inconsolata-g-11")
+(set-face-attribute 'default nil :background "#f4f4ea")
+(set-face-attribute 'font-lock-function-name-face nil :foreground "Black") ;; Blue3
+(set-face-attribute 'font-lock-variable-name-face nil :foreground "Black")
+(set-face-attribute 'font-lock-constant-face nil :foreground "Black")
+(set-face-attribute 'font-lock-builtin-face nil :foreground "Black")
+(set-face-attribute 'font-lock-keyword-face nil :foreground "Blue3")
+(set-face-attribute 'font-lock-preprocessor-face nil :foreground "Blue3")
+(set-face-attribute 'font-lock-type-face nil :foreground "brown3") ;; orangered, brown, firebrick, chocolate
+(set-face-attribute 'font-lock-comment-face nil :foreground "ForestGreen")
+(set-face-attribute 'font-lock-string-face nil :foreground "cyan4")
+
+;; (set-face-attribute 'default nil :font "JetBrains Mono Regular-13")
+(set-face-attribute 'default nil :font "Inconsolata-g-13")
 ;; (set-face-attribute 'default nil :font "Liberation Mono-11")
-;; (set-face-attribute 'default nil :font "Hack-11")
-;; (set-face-attribute 'default nil :font "Iosevka-12")
-;; (set-face-attribute 'default nil :font "Cascadia Mono-11")
-;; (set-face-attribute 'default nil :font "JuliaMono ExtraBold-10")
-;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
-;; (set-face-attribute 'default nil :font "Courier New-13")
-;; (set-face-attribute 'default nil :font "Consolas-12.5")
-(set-face-attribute 'default nil :font "Consolas-13")
-;; (set-face-attribute 'default nil :font "Consolas-16")
+;; (set-face-attribute 'default nil :font "Iosevka-13")
+;; (set-face-attribute 'default nil :font "Cascadia Mono-13")
+;; (set-face-attribute 'default nil :font "Consolas-14")
 
 (setq inhibit-splash-screen t)
 (setq visible-bell nil)
@@ -43,6 +54,16 @@
 (setq-default indent-tabs-mode nil)
 (setq-default c-basic-offset 4)     ;; C
 
+(add-hook 'c-mode-hook
+          (lambda ()
+            (c-set-style "stroustrup")))
+            ;; (c-basic-offset 4)))
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (c-set-style "stroustrup")))
+            ;; (c-basic-offset 4)))
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -50,6 +71,7 @@
 (global-display-line-numbers-mode -1)
 (blink-cursor-mode -1)
 (show-paren-mode 1)
+(column-number-mode 1)
 (setq blink-matching-paren t)
 ;; (recentf-mode 1)
 ;; (save-place-mode 1)
@@ -66,22 +88,27 @@
 ;; (setq abbrev-ignore-case nil)
 ;; (setq abbrev-case-fold nil)
 ;; (setq abbrev-all-caps nil)
-(require 'ido)
-(setq ido-everywhere t)
-(ido-mode t)
-(setq ido-enable-flex-matching t)
-(setq ido-case-fold t)
-(setq read-buffer-completion-ignore-case t)
-(setq read-file-name-completion-ignore-case t)
+
+;; (require 'ido)
+;; (setq ido-everywhere t)
+;; (ido-mode t)
+;; (setq ido-enable-flex-matching t)
+;; (setq ido-case-fold t)
+;; (setq read-buffer-completion-ignore-case t)
+;; (setq read-file-name-completion-ignore-case t)
 ;; (fido-mode t)
-(setq ido-auto-merge-work-directories-length -1)
+;; (setq ido-auto-merge-work-directories-length -1)
+;; (icomplete-mode -1)
 ;; ------
+
 
 ;; (desktop-save-mode 1)
 
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
 (setq initial-scratch-message nil)
+
+(setq read-buffer-completion-ignore-case t)
 
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -96,8 +123,6 @@
   "My modal mode"
   :keymap __MyKeymap)
 
-
-;; @@ORG
 
 (require 'org)
 (setq org-M-RET-may-split-line nil)
@@ -438,6 +463,31 @@
   (message "Buffer fully unlocked. Edit freely, then M-x __evil-wgrep-save.")
   )
 
+;; (defun __evil-wgrep-save-if-diff ()
+;;   (interactive)
+;;   (let ((count 0))
+;;     (save-excursion
+;;       (goto-char (point-min))
+;;       (while (re-search-forward "^\\([^:\n]+\\):\\([0-9]+\\):" nil t)
+;;         (let* ((file (match-string 1))
+;;                (line-num (string-to-number (match-string 2)))
+;;                (new-line (buffer-substring-no-properties (point) (line-end-position))))
+;;           (when (file-exists-p file)
+;;             (with-temp-buffer
+;;               (insert-file-contents file)
+;;               (goto-char (point-min))
+;;               (forward-line (1- line-num))
+;;               (let ((original-line (buffer-substring-no-properties
+;;                                     (line-beginning-position)
+;;                                     (line-end-position))))
+;;                 (unless (string-equal new-line original-line)
+;;                   (delete-region (line-beginning-position) (line-end-position))
+;;                   (insert new-line)
+;;                   (write-region (point-min) (point-max) file nil 'silent)
+;;                   (setq count (1+ count)))))))))
+;;     (message "Saved %d modified line(s)." count))
+;;   )
+
 (defun __evil-wgrep-save-if-diff ()
   (interactive)
   (let ((count 0))
@@ -449,19 +499,28 @@
                (new-line (buffer-substring-no-properties (point) (line-end-position))))
           (when (file-exists-p file)
             (with-temp-buffer
-              (insert-file-contents file)
-              (goto-char (point-min))
-              (forward-line (1- line-num))
-              (let ((original-line (buffer-substring-no-properties
-                                    (line-beginning-position)
-                                    (line-end-position))))
-                (unless (string-equal new-line original-line)
-                  (delete-region (line-beginning-position) (line-end-position))
-                  (insert new-line)
-                  (write-region (point-min) (point-max) file nil 'silent)
-                  (setq count (1+ count)))))))))
-    (message "Saved %d modified line(s)." count))
-  )
+              (let ((inhibit-message t)
+                    (require-final-newline nil)
+                    (backup-inhibited t))
+                (insert-file-contents file)
+                (goto-char (point-min))
+                (forward-line (1- line-num))
+                (let ((original-line (buffer-substring-no-properties
+                                      (line-beginning-position)
+                                      (line-end-position))))
+                  (unless (string-equal new-line original-line)
+                    (delete-region (line-beginning-position) (line-end-position))
+                    (insert new-line)
+                    ;; Avoid modtime check by passing a non-nil VISIT arg
+                    (let ((buffer-file-name file))
+                      (set-visited-file-modtime)) ; prevent modtime mismatch warning
+                    (write-region (point-min) (point-max) file nil 'silent)
+                    (setq count (1+ count))))))))))
+    (message "Saved %d modified line(s)." count)))
+
+(defun :switch-to-buffer-no-default ()
+  (interactive)
+    (switch-to-buffer (read-buffer "Switch to buffer: " nil t)))
 
 ;; @KEYBINDINGS
 
@@ -476,8 +535,8 @@
 (define-key __MyKeymap (kbd "l") 'forward-char)
 (define-key __MyKeymap (kbd "J") 'left-word)
 (define-key __MyKeymap (kbd "L") 'right-word)
-(define-key __MyKeymap (kbd "3") #'(lambda () (interactive) (move-to-window-line 0) (previous-line)))
-(define-key __MyKeymap (kbd "4") #'(lambda () (interactive) (move-to-window-line -1) (next-line)))
+(define-key __MyKeymap (kbd "3") #'(lambda () (interactive) (move-to-window-line 0) (previous-line))) ;; half page up
+(define-key __MyKeymap (kbd "4") #'(lambda () (interactive) (move-to-window-line -1) (next-line)))    ;; half page down
 (define-key __MyKeymap (kbd "a") 'move-beginning-of-line)
 (define-key __MyKeymap (kbd "e") 'move-end-of-line)
 (define-key __MyKeymap (kbd "A") 'move-beginning-of-line)
@@ -520,22 +579,22 @@
 (define-key __MyKeymap (kbd "M") 'replace-string)
 (define-key __MyKeymap (kbd ".") 'string-insert-rectangle)
 (define-key __MyKeymap (kbd ">") 'string-insert-rectangle)
-(define-key __MyKeymap (kbd "h") 'switch-to-buffer)
+(define-key __MyKeymap (kbd "h") ':switch-to-buffer-no-default)
 (define-key __MyKeymap (kbd "H") #'(lambda () (interactive) (switch-to-buffer (other-buffer))))
 (define-key __MyKeymap (kbd "y") 'find-file)
-(define-key __MyKeymap (kbd "Y") 'find-file)
-;; (define-key __MyKeymap (kbd "Y") 'project-find-file) make this a command probably instead
+(define-key __MyKeymap (kbd "Y") 'project-find-file) ;; make this a command probably instead
 ;; (define-key __MyKeymap (kbd "o") 'imenu)
 (define-key __MyKeymap (kbd "'") 'comment-line)
-(define-key __MyKeymap (kbd "\\") 'next-error)
-(define-key __MyKeymap (kbd "]") 'previous-error)
 (define-key __MyKeymap (kbd "`") ':clean-system-buffers)
-(define-key __MyKeymap (kbd "=") 'quick-calc)
 (define-key __MyKeymap (kbd "1") 'beginning-of-defun)
 (define-key __MyKeymap (kbd "2") 'end-of-defun)
-(define-key __MyKeymap (kbd "7") 'backward-list)
-(define-key __MyKeymap (kbd "8") 'forward-list)
-(define-key __MyKeymap (kbd "5") 'xref-find-definitions)
+(define-key __MyKeymap (kbd "5") 'backward-list)
+(define-key __MyKeymap (kbd "6") 'forward-list)
+(define-key __MyKeymap (kbd "7") 'next-error)
+(define-key __MyKeymap (kbd "8") 'previous-error)
+(define-key __MyKeymap (kbd "9") 'goto-line)
+(define-key __MyKeymap (kbd "-") 'xref-find-definitions)
+(define-key __MyKeymap (kbd "=") 'quick-calc)
 ;; (define-key __MyKeymap (kbd ";") (kbd "C-g")) what is the name of command?
 
 (define-key __MyKeymap (kbd "x c") ':compile)
@@ -555,6 +614,7 @@
 (define-key __MyKeymap (kbd "x m o") 'occur)
 (define-key __MyKeymap (kbd "x m d") 'dired)
 (define-key __MyKeymap (kbd "x m b") 'kill-buffer)
+(define-key __MyKeymap (kbd "x m r") 'rename-buffer)
 
 (define-key __MyKeymap (kbd "x e q") 'query-replace)
 (define-key __MyKeymap (kbd "x e i") 'beginning-of-buffer)
@@ -564,7 +624,6 @@
 ;; (define-key __MyKeymap (kbd "x e l") 'forward-list)
 (define-key __MyKeymap (kbd "x e p") 'insert-parentheses)
 (define-key __MyKeymap (kbd "x e u") 'delete-pair)
-(define-key __MyKeymap (kbd "x e g") 'goto-line)
 
 (define-key __MyKeymap (kbd "x w d") 'split-window-below)
 (define-key __MyKeymap (kbd "x w c") 'delete-other-windows)
@@ -606,11 +665,13 @@
 ;; f3 - start macro
 ;; f4 - end macro, replay last macro
 
+(define-key minibuffer-local-completion-map (kbd "<tab>") #'minibuffer-complete)
+(define-key minibuffer-local-filename-completion-map (kbd "<tab>") #'minibuffer-complete)
+
 
 (define-key __MyKeymap (kbd "u") #'ignore)
 (define-key __MyKeymap (kbd "o") #'ignore)
 (define-key __MyKeymap (kbd ";") #'ignore)
-(define-key __MyKeymap (kbd "6") #'ignore)
 (define-key __MyKeymap (kbd "K") #'ignore)
 (define-key __MyKeymap (kbd "I") #'ignore)
 
@@ -642,35 +703,15 @@
 
 ;; rename certain commands to prefix with : , also Pascal case or something in this direction
 
-;; adding keywords with font-lock can do so much highlighting......
-;; how to bold text that begins with @ ??
-
-;; you can make a function that remembers a column number and then
-;; pastes whitespace until point reaches that column number for ease
-;; of formating
-;; formating for code stuff, and formating for text stuff when adding in text
-
 ;; upcase region (lowercase?)
 ;; maybe change to .txt default for notes, and also maybe use dired for notes
 ;; automatic guard?
 
 
-;; grep editting stuff???
-
-
 ;; @INFO
 
 ;; in org moving by defuns moves by headers (other stuffs...??)
-
 ;; ? on command in minibuffer to show possible completions
-;; SPC for find-file autocompletes
-;; you can change font size with mouse wheel, and in the buffer border you can see offset from original
+;; SPC for switch-to-buffer autocompletes
+;; you can change font size with mouse wheel
 ;; can press Q on a lot of emacs' buffers to close them instantly
-
-;; if you press caps-lock while in minibuffer can you hit your Quit hotkey
-;; and get it to work there??? (yes but not for isearch, because hitting
-;; caps-lock gets out of it...)
-
-
-
-
