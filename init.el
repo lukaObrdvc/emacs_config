@@ -1,6 +1,6 @@
 ;; Emacs 29.3_2
 
-;; frickin wgrep agane, asking to save since file is changed
+;; fix wgrep asking to save file
 
 ;; cycle paste? or non yanking kill line?
 ;; go to line as default instead of compilation mode??
@@ -12,7 +12,7 @@
 ;; try out line wrapping?
 
 ;; actually you can quit isearch with tab, so you should
-;; bit quit-keyboard actually...., and relayout some keys???,,,
+;; bind quit-keyboard actually...., and relayout some keys???,,,
 
 ;; count-words-region
 
