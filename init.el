@@ -1,6 +1,29 @@
 ;; Emacs 29.3_2
 
-;; isearch counter
+;; frickin wgrep agane, asking to save since file is changed
+
+;; cycle paste? or non yanking kill line?
+;; go to line as default instead of compilation mode??
+
+;; find-file starts in my modal mode by default??
+
+;; make project-find-file not create a file ever
+
+;; try out line wrapping?
+
+;; actually you can quit isearch with tab, so you should
+;; bit quit-keyboard actually...., and relayout some keys???,,,
+
+;; count-words-region
+
+;; find-file autocompletion should add / automatically when it
+;; autocompletes to a folder..?
+
+;; I and K should just go up by 1 ?
+
+;; probably in the future just use the command line (or something external) for compiling
+;; because you probably cannot compile everything through emacs
+;; either way? And then maybe do the same for grep, but I think you wanna use a dedicated window program
 
 ;; @CONFIGS
 
@@ -83,24 +106,12 @@
 ;; (setq isearch-lazy-count t)
 (define-key isearch-mode-map (kbd "C-g") (lambda ()(interactive)(isearch-cancel)))
 
-;; ------ ido, fido, abbrev
 (abbrev-mode 1)
 ;; (setq abbrev-ignore-case nil)
 ;; (setq abbrev-case-fold nil)
 ;; (setq abbrev-all-caps nil)
 
-;; (require 'ido)
-;; (setq ido-everywhere t)
-;; (ido-mode t)
-;; (setq ido-enable-flex-matching t)
-;; (setq ido-case-fold t)
-;; (setq read-buffer-completion-ignore-case t)
-;; (setq read-file-name-completion-ignore-case t)
-;; (fido-mode t)
-;; (setq ido-auto-merge-work-directories-length -1)
 ;; (icomplete-mode -1)
-;; ------
-
 
 ;; (desktop-save-mode 1)
 
