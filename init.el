@@ -61,9 +61,9 @@
 (set-face-attribute 'font-lock-comment-face nil :foreground "ForestGreen")
 (set-face-attribute 'font-lock-string-face nil :foreground "cyan4")
 
-;; (set-face-attribute 'default nil :font "JetBrains Mono Regular-13")
-(set-face-attribute 'default nil :font "Inconsolata-g-13")
-;; (set-face-attribute 'default nil :font "Liberation Mono-11")
+(set-face-attribute 'default nil :font "JetBrains Mono Regular-14")
+;; (set-face-attribute 'default nil :font "Inconsolata-g-13")
+;; (set-face-attribute 'default nil :font "Liberation Mono-14")
 ;; (set-face-attribute 'default nil :font "Iosevka-13")
 ;; (set-face-attribute 'default nil :font "Cascadia Mono-13")
 ;; (set-face-attribute 'default nil :font "Consolas-14")
@@ -691,7 +691,7 @@
 
 ;; make wgrep be case sensitive blud.......
 
-;; git stuff needed,  MAGIT, diff
+;; diff
 ;; project stuff needed
 ;; dired stuff and directory in general
 ;; desktop-save-mode??
@@ -717,6 +717,11 @@
 ;; upcase region (lowercase?)
 ;; maybe change to .txt default for notes, and also maybe use dired for notes
 ;; automatic guard?
+
+;; compilation, search in files, replace in files, directory
+;; management, switch to project, create project, create note
+;; search notes by tags
+
 
 
 ;; @INFO
