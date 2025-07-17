@@ -1,4 +1,4 @@
 (setq project-name "rawinput")
-(setq build-script-name "build")
-(setq build-script-directory "w:/Projects/rawinput/")
-(setq code-file-extensions "c,h")
+(setq build-script-path "w:/Projects/rawinput/")
+(setq build-script-name "./build.bat")
+(setq file-extensions "c,h")

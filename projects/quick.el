@@ -1,4 +1,4 @@
 (setq project-name "quick")
-(setq build-script-name "build")
-(setq build-script-directory "w:/Projects/quick/")
-(setq code-file-extensions "c,h")
+(setq build-script-path "w:/Projects/quick/")
+(setq build-script-name "./build.bat")
+(setq file-extensions "c,h")

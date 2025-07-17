@@ -1,4 +1,4 @@
 (setq project-name "vgengine")
-(setq build-script-name "build")
-(setq build-script-directory "w:/Projects/vgengine/code")
-(setq code-file-extensions "cpp,h")
+(setq build-script-path "w:/Projects/vgengine/code/")
+(setq build-script-name "./build.bat")
+(setq file-extensions "cpp,h")
